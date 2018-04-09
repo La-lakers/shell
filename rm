@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+
+PARAM="$*"
+RM_COMMAND="/bin/rm"
+RECYLE_DIR=~/tmp/recyle/
+
+
+
+if [ ! -d "$RECYLE_DIR" ] ;then
+    RM_COMMAND "$RECYLE_DIR" >/dev/null 2>&1
+    mkdir -p $RECYLE_DIR
+fi
+
+for filename in $PARAM ;do
+    if [ -e "$filename" ] ;then
+        if [ -e "${RECYLE_DIR}${filename}" ];then
+            $RM_COMMAND -rf "${RECYLE_DIR}${filename}"
+        fi
+        mv "$filename" $RECYLE_DIR
+        echo Source:`readlink -f "$filename"` >$RECYLE_DIR/.`basename "$filename"`.info
+        echo `date "+%Y/%m/%d %H:%M:%S"` Delete Done >>$RECYLE_DIR/.`basename "$filename"`.info
+    fi
+done
+$RM_COMMAND  "$PARAM" 2>/dev/null 
+#/bin/rm
